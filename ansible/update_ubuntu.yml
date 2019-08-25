@@ -1,0 +1,11 @@
+---
+- name: apt-get update
+  apt:
+    update_cache: yes
+
+- name: Install packages
+  apt:
+    name: "{{ packages }}"
+  vars:
+    - python3
+    - python3-pip
