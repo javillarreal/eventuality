@@ -1,6 +1,0 @@
----
-- name:
-  file: "path=/home/{{project_name}} state=directory"
-
-- name: create virtualenv and install Django
-  pip: "name=django virtualenv=/home/{{project_name}}/env virtualenv_command=virtualenv"
