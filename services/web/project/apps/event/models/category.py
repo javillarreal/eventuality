@@ -1,5 +1,7 @@
-from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import graphene
+from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+
 from project import db
 
 class Category(db.Model):
@@ -13,4 +15,10 @@ class Category(db.Model):
     children = db.relationship("Category")
 
     def __repr__(self):
-        return '<Event-category: {}'.format(self.name)
+        return f'<Event-category: {self.name}'
+
+
+class CategoryType(SQLAlchemyObjectType):
+    class Meta:
+        model = Category
+        interfaces = (graphene.relay.Node, )
