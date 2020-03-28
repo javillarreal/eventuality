@@ -10,3 +10,14 @@ services:
       - 5000:5000
     env_file:
       - ./.env.dev
+  db:
+    build: ./services/database
+    environment:
+      - DATABASE=${DB_NAME}
+      - USER_DB=${DB_USER}
+      - PASSWORD=${DB_PASSWORD}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - database:/var/lib/postgresql/data
+volumes:
+  database:      
