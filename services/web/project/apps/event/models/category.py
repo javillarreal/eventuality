@@ -21,4 +21,3 @@ class Category(db.Model):
 class CategoryType(SQLAlchemyObjectType):
     class Meta:
         model = Category
-        interfaces = (graphene.relay.Node, )
