@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-import graphene
-from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from project import db
 

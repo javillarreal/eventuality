@@ -3,6 +3,8 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+from flask_login import LoginManager
+
 import graphene
 from flask_graphql import GraphQLView
 
@@ -11,11 +13,16 @@ app = Flask(__name__)
 app.config.from_object("project.config.Config")
 app.debug = True
 
+# set uo login manager
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+
 # set up database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from .apps.event.models.category import Category
+from .apps.user.models.user import User
 
 from .apps.event.schema import Query as eventQuery
 
@@ -29,7 +36,7 @@ app.add_url_rule(
     view_func=GraphQLView.as_view(
         'graphql',
         schema=schema,
-        graphiql=True # for having the GraphiQL interface
+        graphiql=True # to have the GraphiQL interface
     )
 )
 
