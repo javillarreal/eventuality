@@ -1,7 +1,8 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from graphene_sqlalchemy import SQLAlchemyObjectType
 
-from project import db
+from project.app import db
 
 
 class User(db.Model):
@@ -10,7 +11,7 @@ class User(db.Model):
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(30))
     email = db.Column(db.String(40), nullable=False, unique=True)
-    password = db.Column(db.String(200), nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
     country = db.Column(db.String(3))
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.now)
     last_login = db.Column(db.DateTime)
@@ -25,12 +26,18 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
-        self.password = generate_password_hash(password, method='sha256')
+        self.password_hash = generate_password_hash(password, method='sha256')
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.password_hash, password)
 
     @property
     def full_name(self):
         return ' '.join(self.first_name, self.last_name)
- 
+
+
+class UserType(SQLAlchemyObjectType):
+    
+    class Meta:
+        model = User
+        exclude_fields = ('password_hash',)

@@ -1,7 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
-from project import db
+from project.app import db
 
 class Category(db.Model):
     __tablename__ = 'event_category'
@@ -18,5 +17,6 @@ class Category(db.Model):
 
 
 class CategoryType(SQLAlchemyObjectType):
+    
     class Meta:
         model = Category

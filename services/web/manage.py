@@ -1,7 +1,6 @@
 from flask.cli import FlaskGroup
 
-from project import app, db
-from project import Category
+from project.app import app, db, Category
 
 cli = FlaskGroup(app)
 

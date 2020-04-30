@@ -1,4 +1,4 @@
 from .queries import categoryQuery
 
-class Query(categoryQuery.Query):
+class EventQuery(categoryQuery.Query):
     pass
