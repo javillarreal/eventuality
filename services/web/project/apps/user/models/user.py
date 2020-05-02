@@ -28,11 +28,11 @@ class User(db.Model):
     def password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
 
-    def check_password(self, password):
+    def check_password(self, password) -> bool:
         return check_password_hash(self.password_hash, password)
 
     @property
-    def full_name(self):
+    def full_name(self) -> str:
         return ' '.join(self.first_name, self.last_name)
 
 
