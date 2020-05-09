@@ -1,15 +1,16 @@
+from datetime import datetime
 from project.app import db
 
 
-users = Table('users',
+users = db.Table('users',
     db.Column('promoter_id', db.Integer, db.ForeignKey('promoter.id'), primary_key=True),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('role', db.Integer, nullable=False)
+    db.Column('role', db.Integer, default=1, nullable=False)
 )
 
 
 class Promoter(db.Model):
-    ROLES = {
+    USER_ROLES = {
         'support': 0,
         'creator': 1,
         'admin': 2
