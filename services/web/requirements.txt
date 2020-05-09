@@ -10,3 +10,4 @@ python-dotenv>=0.13.0,<1.0.0
 requests>=2.23.0,<3.0.0
 flask-jwt-extended>=3.24.1,<4.0.0
 geopy>=1.21.0,<2.0.0
+eralchemy>=1.2.10,<2.0.0

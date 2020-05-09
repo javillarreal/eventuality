@@ -22,7 +22,7 @@ migrate = Migrate(app, db)
 jwt = JWTManager(app)
 
 
-from .apps.event.models.category import Category
+from .apps.event.models.eventCategory import EventCategory
 from .apps.event.schema import EventQuery
 
 from .apps.user.models.user import User
@@ -69,7 +69,7 @@ def login():
     if not user.check_password(password):
         return jsonify({"msg": "Password incorrect"}), 401
 
-    access_token = create_access_token(identity=username)
+    access_token = create_access_token(identity=user.id)
     return jsonify(access_token=access_token), 200
 
 

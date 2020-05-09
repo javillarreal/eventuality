@@ -1,6 +1,6 @@
 from flask.cli import FlaskGroup
 
-from project.app import app, db, Category
+from project.app import app, db, EventCategory
 
 cli = FlaskGroup(app)
 
@@ -12,12 +12,12 @@ def create_db():
 
 @cli.command("seed_db")
 def seed_db():
-    db.session.add(Category(
+    db.session.add(EventCategory(
         name='Music',
         description='Main category of this event is: music',
         default=False
     ))
-    db.session.add(Category(
+    db.session.add(EventCategory(
         name='Other',
         description='Main category of this event is: other',
         default=True
