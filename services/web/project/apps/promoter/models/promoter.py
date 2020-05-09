@@ -2,7 +2,7 @@ from datetime import datetime
 from project.app import db
 
 
-users = db.Table('users',
+promoter_users = db.Table('promoter_users',
     db.Column('promoter_id', db.Integer, db.ForeignKey('promoter.id'), primary_key=True),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('role', db.Integer, default=1, nullable=False)
@@ -24,7 +24,7 @@ class Promoter(db.Model):
     latitude = db.Column(db.Float(precision=9))
     email = db.Column(db.String(40), unique=True)
     main_category = db.Column(db.Integer, db.ForeignKey('event_category.id'), nullable=True)
-    users = db.relationship('User', secondary=users, lazy='subquery', backref=db.backref('pages', lazy=True))
+    users = db.relationship('User', secondary=promoter_users, lazy='subquery', backref=db.backref('pages', lazy=True))
 
     def __repr__(self):
         return f'<Promoter: {self.name}>'
