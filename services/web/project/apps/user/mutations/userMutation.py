@@ -13,6 +13,7 @@ class CreateUser(graphene.Mutation):
         last_name = graphene.String(required=False)
         birthdate = graphene.DateTime(required=False)
         country = graphene.String(required=False)
+        # TODO: more arguments
     
     def mutate(self, info, **kwargs):
         user = User(**kwargs)
