@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import IntEnum
 
 from project.app import db
 from project.apps.promoter.models.promoter import Promoter
@@ -11,11 +12,6 @@ event_subcategories = db.Table('event_subcategories',
 
 
 class Event(db.Model):
-    PROMOTER_ROLES = {
-        'copromoter': 0,
-        'main': 1
-    }
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     longitude = db.Column(db.Float(precision=9))

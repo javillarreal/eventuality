@@ -1,9 +1,15 @@
+import json
+
 import click
 from flask.cli import FlaskGroup
 
-from project.app import app, db, EventCategory, User
+import spotipy
+from project import settings
+from project.app import EventCategory, User, app, db
+from spotipy.oauth2 import SpotifyClientCredentials
 
 cli = FlaskGroup(app)
+
 
 @cli.command('create-db')
 def create_db():
@@ -11,28 +17,41 @@ def create_db():
     db.create_all()
     db.session.commit()
 
+
 @cli.command('seed-db')
 def seed_db():
-    # just dummy categories
-    db.session.add(EventCategory(
-        name='Music',
-        description='Main category of this event is: music',
-        default=False
-    ))
-    db.session.add(EventCategory(
-        name='Other',
-        description='Main category of this event is: other',
-        default=True
-    ))
-    
-    # first admin
-    db.session.add(User(
-        username='jaimescose',
-        email='jaimescoseru@gmail.com',
-        is_admin=True
-    ))
+    # load initial event categories
+    print('Loading data file')
+    categories_file = 'data.json'
+    with open(categories_file, 'r') as file:
+        categories = json.load(file)
+    categories = categories['categories']
 
+    print('Adding new categories')
+    for category_dict in categories:
+        print(category_dict)
+        db.session.add(EventCategory(**category_dict))
     db.session.commit()
+    print('Categories added')
+
+    # music_category = EventCategory.query.filter(EventCategory.name=='Music').first()
+    #  
+    # print('Fetching music subcategories form spotify')
+    # sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
+    #     client_id=settings.spotify['SPOTIFY_CLIENT_ID'],
+    #     client_secret=settings.spotify['SPOTIFY_CLIENT_SECRET']
+    # ))
+    #
+    # result = sp.recommendation_genre_seeds()
+    # for genre in result['genres']:
+    #     print(genre)
+    #     category = EventCategory(
+    #         name=genre,
+    #         description=f'Main topic of this event: {genre}. Subcategory of: Music'
+    #     )
+    #     music_category.children.append(category)
+    # db.session.commit()
+    # print('Music subcategories added')
 
 
 @cli.command('create-admin')
@@ -48,6 +67,7 @@ def create_admin(username, email):
     ))
     
     db.session.commit()
+
 
 if __name__ == '__main__':
     cli()

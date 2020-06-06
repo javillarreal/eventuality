@@ -1,6 +1,7 @@
 from datetime import datetime
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from project.app import db
+from project.apps.event.models.eventCategory import EventCategory
 
 
 class Promoter(db.Model):
@@ -12,7 +13,9 @@ class Promoter(db.Model):
     longitude = db.Column(db.Float(precision=9))
     latitude = db.Column(db.Float(precision=9))
     email = db.Column(db.String(40))
-    main_category = db.Column(db.Integer, db.ForeignKey('event_category.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('event_category.id'))
+    category = db.relationship(EventCategory)
+
 
     def __repr__(self):
         return f'<Promoter: {self.username}>'

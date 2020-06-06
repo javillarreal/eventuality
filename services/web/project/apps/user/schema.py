@@ -1,4 +1,3 @@
-import graphene
 from .queries import userQuery
 from .mutations import userMutation
 

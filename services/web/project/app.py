@@ -26,18 +26,19 @@ from .apps.event.models.event import Event
 from .apps.event.models.eventCategory import EventCategory
 from .apps.event.models.eventPromoter import EventPromoter
 from .apps.promoter.models.promoter import Promoter
-from .apps.promoter.models.prromoterUser import PromoterUser
+from .apps.promoter.models.promoterUser import PromoterUser
 from .apps.user.models.user import User
 
 from .apps.event.schema import EventQuery
+from .apps.promoter.schema import PromoterMutation, PromoterQuery
 from .apps.user.schema import UserQuery, UserMutation
 
 
-class Query(EventQuery, UserQuery):
+class Query(EventQuery, UserQuery, PromoterQuery):
     pass
 
 
-class Mutation(UserMutation):
+class Mutation(UserMutation, PromoterMutation):
     pass
 
 

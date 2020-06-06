@@ -1,18 +1,17 @@
 import graphene
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt_claims
-from project.utils.auth import admin_required
+from graphene_sqlalchemy import SQLAlchemyConnectionField
+from flask_jwt_extended import jwt_required, get_jwt_claims, get_jwt_identity
 
 from ..models.eventCategory import EventCategory, EventCategoryType
 
 class Query(graphene.ObjectType):
     # node = graphene.relay.Node.Field()
-    # all_categories = SQLAlchemyConnectionField(CategoryType)
+    # all_categories = SQLAlchemyConnectionField(EventCategoryType)
     categories = graphene.List(EventCategoryType)
     default_category = graphene.Field(EventCategoryType)
     
-    @admin_required
     def resolve_categories(self, info):
-        print(get_jwt_claims)
+        print(get_jwt_claims())
         print(get_jwt_identity())
         return EventCategory.query.all()
 

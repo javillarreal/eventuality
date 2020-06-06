@@ -1,0 +1,130 @@
+{
+    "categories": [
+        {
+            "id": "1",
+            "name": "Music",
+            "description": "Main topic of this event: Music",
+            "default": false
+        },
+        {
+            "id": "2",
+            "name": "Visual Arts",
+            "description": "Main topic of this event: Visual Arts",
+            "default": false
+        },
+        {
+            "id": "3",
+            "name": "Performing Arts",
+            "description": "Main topic of this event: Performing Arts",
+            "default": false
+        },
+        {
+            "id": "4",
+            "name": "Film",
+            "description": "Main topic of this event: Film",
+            "default": false
+        },
+        {
+            "id": "5",
+            "name": "Lectures & Books",
+            "description": "Main topic of this event: Lectures & Books",
+            "default": false
+        },
+        {
+            "id": "6",
+            "name": "Fashion",
+            "description": "Main topic of this event: Fashion",
+            "default": false
+        },
+        {
+            "id": "7",
+            "name": "Food & Drink",
+            "description": "Main topic of this event: Food & Drink",
+            "default": false
+        },
+        {
+            "id": "8",
+            "name": "Festivals & Fairs",
+            "description": "Main topic of this event: Festivals & Fairs",
+            "default": false
+        },
+        {
+            "id": "9",
+            "name": "Charities",
+            "description": "Main topic of this event: Charities",
+            "default": false
+        },
+        {
+            "id": "10",
+            "name": "Sports & Active Life",
+            "description": "Main topic of this event: Sports & Active Life",
+            "default": false
+        },
+        {
+            "id": "11",
+            "name": "Nightlife",
+            "description": "Main topic of this event: Nightlife",
+            "default": false
+        },
+        {
+            "id": "12",
+            "name": "Kids & Family",
+            "description": "Main topic of this event: Kids & Family",
+            "default": false
+        },
+        {
+            "id": "13",
+            "name": "Cars & Motorcycles",
+            "description": "Main topic of this event: Cars & Motorcycles",
+            "default": false
+        },
+        {
+            "id": "14",
+            "name": "Dancing",
+            "description": "Main topic of this event: Dancing",
+            "default": false
+        },
+        {
+            "id": "15",
+            "name": "Games",
+            "description": "Main topic of this event: Games",
+            "default": false
+        },
+        {
+            "id": "16",
+            "name": "Education & Learning",
+            "description": "Main topic of this event: Education & Learning",
+            "default": false
+        },
+        {
+            "id": "17",
+            "name": "Movements & Politics",
+            "description": "Main topic of this event: Movements & Politics",
+            "default": false
+        },
+        {
+            "id": "18",
+            "name": "Outdoors & Adventure",
+            "description": "Main topic of this event: Outdoors & Adventure",
+            "default": false
+        },
+        {
+            "id": "19",
+            "name": "Pets & Animals",
+            "description": "Main topic of this event: Pets & Animals",
+            "default": false
+        },
+        {
+            "id": "20",
+            "name": "Religion & Beliefs",
+            "description": "Main topic of this event: Religion & Beliefs",
+            "default": false
+        },
+        {
+            "id": "21",
+            "name": "Other",
+            "description": "Main topic of this event: Other",
+            "default": true
+        }
+    ]
+}
