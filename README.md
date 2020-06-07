@@ -13,7 +13,7 @@ Create database for fisrt time (in docker web container):
 - python manage.py create-db
 
 Load initial data:
-- python manage.py
+- python manage.py seed-db
 
 Migrate database:
 - flask db migrate -m "optional message"
