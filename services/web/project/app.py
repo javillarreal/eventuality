@@ -29,7 +29,7 @@ from .apps.promoter.models.promoter import Promoter
 from .apps.promoter.models.promoterUser import PromoterUser
 from .apps.user.models.user import User
 
-from .apps.event.schema import EventQuery
+from .apps.event.schema import EventQuery, EventMutation
 from .apps.promoter.schema import PromoterMutation, PromoterQuery
 from .apps.user.schema import UserQuery, UserMutation
 
@@ -38,7 +38,7 @@ class Query(EventQuery, UserQuery, PromoterQuery):
     pass
 
 
-class Mutation(UserMutation, PromoterMutation):
+class Mutation(UserMutation, PromoterMutation, EventMutation):
     pass
 
 

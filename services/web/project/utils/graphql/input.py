@@ -1,6 +1,8 @@
+from datetime import datetime
 from typing import Tuple
 
 from ..graphql.exception import ExceptionType
+
 
 def get_model_fields(model, **kwargs: dict) -> Tuple[dict, dict]:
     model_name = str(model.__name__).lower()
@@ -44,4 +46,25 @@ def is_value_unique(model, value, input_name: str = 'id'):
             message=f"{input_name} {value} is taken"
         )
 
+    return ok, exception
+
+
+def validate_dates(datetime_from: datetime, datetime_to: datetime = None):
+    ok, exception = True, None
+    
+    current_date = datetime.now()
+    if current_date > datetime_from:
+        ok = False
+        exception = ExceptionType(
+            field='datetime_from',
+            message=f"Check the datetime_from value. {datetime_from} is a date in the past"
+        )
+
+    if datetime_to is not None:
+        if current_date > datetime_from:
+            ok = False
+            exception = ExceptionType(
+                message=f"Check the datetimes values. {datetime_to} is older than {datetime_from}"
+            )
+    
     return ok, exception

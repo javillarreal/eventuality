@@ -1,9 +1,10 @@
-from project.app import db
-
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
-from graphene_sqlalchemy import SQLAlchemyObjectType
+
 import graphene
+from graphene_sqlalchemy import SQLAlchemyObjectType
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from project.app import db
 
 
 class User(db.Model):
@@ -37,6 +38,9 @@ class User(db.Model):
     @property
     def full_name(self) -> str:
         return ' '.join(self.first_name, self.last_name)
+
+    def is_allowed(self, access_level) -> bool:
+        return self.access >= access_level
 
 
 class UserType(SQLAlchemyObjectType):

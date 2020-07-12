@@ -9,7 +9,8 @@ from project.apps.promoter.models.promoter import Promoter, PromoterType
 from project.apps.promoter.models.promoterUser import PromoterUser
 from project.apps.user.models.user import User
 from project.utils.auth.core import admin_required
-from project.utils.graphql.input import (get_model_fields, is_valid_id, ExceptionType)
+from project.utils.graphql.input import (ExceptionType, get_model_fields,
+                                         is_valid_id)
 from project.utils.graphql.mutation import BaseMutation
 
 
@@ -30,7 +31,6 @@ class CreatePromoter(BaseMutation):
     @admin_required    
     def mutate(self, info, **kwargs):
         model_fields, other_fields = get_model_fields(Promoter, **kwargs)
-        print(model_fields)
         exceptions = list()
 
         # check if user exists

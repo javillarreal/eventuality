@@ -1,9 +1,11 @@
 from datetime import datetime
 from enum import IntEnum
 
+from dateutil.relativedelta import relativedelta
+from graphene_sqlalchemy import SQLAlchemyObjectType
+
 from project.app import db
 from project.apps.promoter.models.promoter import Promoter
-
 
 event_subcategories = db.Table('event_subcategories',
     db.Column('event_id', db.Integer, db.ForeignKey('event.id'), primary_key=True),
@@ -12,6 +14,8 @@ event_subcategories = db.Table('event_subcategories',
 
 
 class Event(db.Model):
+    minumum_duration = relativedelta(minutes=30)
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     longitude = db.Column(db.Float(precision=9))
@@ -24,6 +28,11 @@ class Event(db.Model):
     main_category_id = db.Column(db.Integer, db.ForeignKey('event_category.id'))
     main_category = db.relationship('EventCategory')
 
-
     def __repr__(self):
         return f'Event: {self.name}'
+
+
+class EventType(SQLAlchemyObjectType):
+    
+    class Meta:
+        model = Event

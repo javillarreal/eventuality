@@ -46,5 +46,9 @@ def role_required(fn, role):
     def wrapper(*args, **kwargs):
         verify_jwt_in_request()
         claims = get_jwt_claims()
-        # TODO: implement user role required
+
+        if not claims['is_admin']:
+            raise exception
+        
+        return fn(*args, **kwargs)
     return wrapper
