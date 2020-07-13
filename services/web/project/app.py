@@ -22,11 +22,9 @@ migrate = Migrate(app, db)
 jwt = JWTManager(app)
 
 
-from .apps.event.models.event import Event
+from .apps.event.models.event import Event, EventPromoter
 from .apps.event.models.eventCategory import EventCategory
-from .apps.event.models.eventPromoter import EventPromoter
-from .apps.promoter.models.promoter import Promoter
-from .apps.promoter.models.promoterUser import PromoterUser
+from .apps.promoter.models.promoter import Promoter, PromoterUser
 from .apps.user.models.user import User
 
 from .apps.event.schema import EventQuery, EventMutation

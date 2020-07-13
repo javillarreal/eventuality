@@ -1,12 +1,11 @@
 import graphene
 
 from project.app import db
-from project.apps.promoter.models.promoter import Promoter
-from project.apps.promoter.models.promoterUser import (PromoterUser,
-                                                       PromoterUserType)
+from project.apps.promoter.models.promoter import Promoter, PromoterUser
 from project.apps.user.models.user import User
 from project.utils.graphql.mutation import BaseMutation
 
+from ..types import PromoterType, PromoterUserType
 
 user_role_enum = graphene.Enum.from_enum(PromoterUser.Role)
 

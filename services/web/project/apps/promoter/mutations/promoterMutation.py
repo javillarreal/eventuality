@@ -5,13 +5,14 @@ from flask_jwt_extended import jwt_required
 
 from project.app import db
 from project.apps.event.models.eventCategory import EventCategory
-from project.apps.promoter.models.promoter import Promoter, PromoterType
-from project.apps.promoter.models.promoterUser import PromoterUser
+from project.apps.promoter.models.promoter import Promoter, PromoterUser
 from project.apps.user.models.user import User
 from project.utils.auth.core import admin_required
 from project.utils.graphql.input import (ExceptionType, get_model_fields,
                                          is_valid_id)
 from project.utils.graphql.mutation import BaseMutation
+
+from ..types import PromoterType
 
 
 class CreatePromoter(BaseMutation):

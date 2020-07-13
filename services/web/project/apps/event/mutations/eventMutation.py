@@ -1,12 +1,14 @@
 import graphene
 
 from project.app import db
+from project.apps.promoter.models.promoter import PromoterUser
+from project.utils.auth.core import requires_access_level, role_required
 from project.utils.graphql.input import (get_model_fields, is_valid_id,
                                          validate_dates)
 from project.utils.graphql.mutation import BaseMutation
 
-from ..models.event import Event, EventType
 from ..models.eventCategory import EventCategory
+from ..types import EventCategoryType, EventType
 
 
 class CreateEvent(BaseMutation):
@@ -26,6 +28,7 @@ class CreateEvent(BaseMutation):
         subcategories_ids = graphene.List(graphene.Int, required=False)
         
     # TODO: add decorator for creator and admin roles requirement
+    @requires_access_level(required_role=PromoterUser.Role.CREATOR)
     def mutate(self, info, **kwargs):
         # TODO: add location support
         model_fields, other_fields = get_model_fields(Event, **kwargs)
@@ -62,8 +65,8 @@ class CreateEvent(BaseMutation):
 
         # create event
         event = Event(**model_fields)
-        db.session.add(event)
-        db.session.commit()
+        # db.session.add(event)
+        # db.session.commit()
 
         return CreateEvent(event=event)
 

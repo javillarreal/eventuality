@@ -4,7 +4,8 @@ from flask import jsonify
 from flask_jwt_extended import get_jwt_claims, verify_jwt_in_request
 
 from project.app import jwt
-from project.utils.auth.exceptions import AdminLevelRequired
+from project.utils.auth.exceptions import (AdminLevelRequired,
+                                           UserRoleNotSufficed)
 
 
 @jwt.user_claims_loader
@@ -19,7 +20,7 @@ def add_claims_to_access_token(identity):
 
     promoter_user_role = PromoterUser.query.filter(PromoterUser.user_id==identity)
     if promoter_user_role:
-        claims['roles'] = [r.role for r in promoter_user_role]
+        claims['roles'] = [{r.promoter: r.role} for r in promoter_user_role]
 
     user = User.query.get(identity)
     if user:
@@ -41,14 +42,34 @@ def admin_required(fn, exception=AdminLevelRequired):
     return wrapper
 
 
-def role_required(fn, role):
+def requires_access_level(required_role: int):
+    def decorator(fn):
+        @wraps(fn)
+        def decorated_function(*args, **kwargs):
+            pass
+            # if not session.get('email'):
+            #     return redirect(url_for('users.login'))
+# 
+            # user = User.find_by_email(session['email'])
+            # elif not user.allowed(access_level):
+            #     return redirect(url_for('users.profile', message="You do not have access to that page. Sorry!"))
+            # return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+
+def role_required(fn, required_role, exception=UserRoleNotSufficed):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         verify_jwt_in_request()
         claims = get_jwt_claims()
 
-        if not claims['is_admin']:
-            raise exception
+        user_roles = claims['roles']
+        print(type(user_roles), user_roles)
+
+        print(*args)
+
+        print(**kwargs)
         
         return fn(*args, **kwargs)
     return wrapper

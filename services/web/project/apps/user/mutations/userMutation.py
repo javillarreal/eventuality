@@ -1,6 +1,10 @@
 import graphene
+
 from project.app import db
-from project.apps.user.models.user import User, UserType
+from project.apps.user.models.user import User
+
+from ..types import UserType
+
 
 class CreateUser(graphene.Mutation):
     # TODO: add validations and inherit from BaseMutation

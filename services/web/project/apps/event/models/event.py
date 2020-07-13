@@ -1,11 +1,12 @@
 from datetime import datetime
-from enum import IntEnum
+from enum import IntEnum, auto
 
 from dateutil.relativedelta import relativedelta
-from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from project.app import db
 from project.apps.promoter.models.promoter import Promoter
+
+from .eventCategory import EventCategory
 
 event_subcategories = db.Table('event_subcategories',
     db.Column('event_id', db.Integer, db.ForeignKey('event.id'), primary_key=True),
@@ -32,7 +33,16 @@ class Event(db.Model):
         return f'Event: {self.name}'
 
 
-class EventType(SQLAlchemyObjectType):
-    
-    class Meta:
-        model = Event
+class EventPromoter(db.Model):
+
+    class Role(IntEnum):
+        COPROMOTER = auto()
+        MAIN = auto()
+
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
+    promoter_id = db.Column(db.Integer, db.ForeignKey('promoter.id'), primary_key=True)
+
+    role = db.Column(db.Integer, default=1, nullable=False)
+
+    event = db.relationship('Event', backref=db.backref('event_promoters'))
+    promoter = db.relationship('Promoter', backref=db.backref('event_promoters', lazy='dynamic'))

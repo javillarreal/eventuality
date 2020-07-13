@@ -1,6 +1,8 @@
 import graphene
 from flask_jwt_extended import jwt_required
-from ..models.promoter import Promoter, PromoterType
+
+from ..models.promoter import Promoter
+from ..types import PromoterType
 
 
 class Query(graphene.ObjectType):
