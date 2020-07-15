@@ -23,17 +23,15 @@ def get_model_fields(model, **kwargs: dict) -> Tuple[dict, dict]:
 
 
 def is_valid_id(model, id: int, input_name: str = 'id'):
-    ok, exception = True, None
-
     instance = model.query.get(id)
+    
     if not instance:
-        ok = False
         exception = ExceptionType(
             field=input_name,
             message=f"{model.__name__} with id {id} not found"
         )
-    
-    return ok, exception
+        
+        return exception
 
 
 def is_value_unique(model, value, input_name: str = 'id'):
@@ -50,21 +48,18 @@ def is_value_unique(model, value, input_name: str = 'id'):
 
 
 def validate_dates(datetime_from: datetime, datetime_to: datetime = None):
-    ok, exception = True, None
-    
+
     current_date = datetime.now()
     if current_date > datetime_from:
-        ok = False
         exception = ExceptionType(
             field='datetime_from',
             message=f"Check the datetime_from value. {datetime_from} is a date in the past"
         )
+        return exception
 
     if datetime_to is not None:
         if current_date > datetime_from:
-            ok = False
             exception = ExceptionType(
                 message=f"Check the datetimes values. {datetime_to} is older than {datetime_from}"
             )
-    
-    return ok, exception
+            return exception

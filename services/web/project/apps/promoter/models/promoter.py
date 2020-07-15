@@ -17,10 +17,14 @@ class PromoterUser(db.Model):
     promoter_id = db.Column(db.Integer, db.ForeignKey('promoter.id'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
-    role = db.Column(db.Integer, default=1, nullable=False)
+    role = db.Column(db.Integer, default=Role.SUPPORT.value, nullable=False)
 
     promoter = db.relationship('Promoter', backref=db.backref('roles'))
     user = db.relationship('User', backref=db.backref('roles'))
+
+    @classmethod
+    def get_minimum_role_for_event(cls):
+        return cls.Role.CREATOR
 
 
 class Promoter(db.Model):
@@ -34,12 +38,11 @@ class Promoter(db.Model):
     email = db.Column(db.String(40))
     category_id = db.Column(db.Integer, db.ForeignKey('event_category.id'))
     category = db.relationship(EventCategory)
-    users = db.relationship('User', secondary='promoter_user')
-    # users = association_proxy("roles", "user")
+    users = db.relationship('User', secondary='promoter_user', backref=db.backref('promoters'))
 
     def __repr__(self):
         return f'<Promoter: {self.username}>'
 
     def get_user_role(self, user: User):
-        promoter_user = PromoterUser.query.filter(PromoterUser.user==user)
+        promoter_user = PromoterUser.query.filter(PromoterUser.user==user).first()
         return promoter_user.role

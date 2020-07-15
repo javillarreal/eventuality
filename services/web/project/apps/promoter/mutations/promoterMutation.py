@@ -38,8 +38,8 @@ class CreatePromoter(BaseMutation):
         field = 'admin_user_id'
         admin_user_id = other_fields.get(field)
 
-        ok, exception = is_valid_id(User, admin_user_id, field)
-        if not ok:
+        exception = is_valid_id(User, admin_user_id, field)
+        if exception is not None:
             exceptions.append(exception)
         else:
             admin_user = User.query.get(admin_user_id)
@@ -48,7 +48,6 @@ class CreatePromoter(BaseMutation):
         field = 'username'
         promoter_username = model_fields.get(field)
         if Promoter.query.filter(Promoter.username==promoter_username).first():
-            ok = False
             exception = ExceptionType(
                 field=field,
                 message=f"'{promoter_username}' {field} is taken"
@@ -60,11 +59,11 @@ class CreatePromoter(BaseMutation):
         category_id = model_fields.get(field, None)
 
         if category_id:
-            ok, exception = is_valid_id(EventCategory, category_id, field)
-            if not ok: exceptions.append(exception)
+            exception = is_valid_id(EventCategory, category_id, field)
+            if exception is not None: exceptions.append(exception)
 
         if len(exceptions) > 0:
-            return CreatePromoter(exceptions=exceptions, ok=ok)
+            return CreatePromoter(exceptions=exceptions, ok=False)
         
         # create promoter
         promoter = Promoter(**model_fields)

@@ -4,7 +4,8 @@ from enum import IntEnum, auto
 from dateutil.relativedelta import relativedelta
 
 from project.app import db
-from project.apps.promoter.models.promoter import Promoter
+from project.apps.promoter.models.promoter import Promoter, PromoterUser
+from project.apps.user.models.user import User
 
 from .eventCategory import EventCategory
 
@@ -32,6 +33,37 @@ class Event(db.Model):
     def __repr__(self):
         return f'Event: {self.name}'
 
+    @classmethod
+    def create_event(cls, user: User, main_promoters: list, copromoters: list = [], **kwargs):
+
+        event = cls(**kwargs)
+        db.session.add(event)
+        db.session.commit()
+
+        for promoter in main_promoters:
+            event.assign_promoter(promoter=promoter, user=user, main=True)
+
+        for promoter in copromoters:
+            event.assign_promoter(promoter, user)
+
+        return event
+    
+    def assign_promoter(self, promoter: Promoter, user: User, main: bool = False):
+
+        event_promoter = EventPromoter(
+            event=self,
+            promoter=promoter,
+            role=EventPromoter.Role.MAIN.value
+        )
+        
+        user_role = promoter.get_user_role(user)
+
+        if user_role >= PromoterUser.Role.CREATOR.value:
+            event_promoter.status = EventPromoter.Status.APPROVED
+
+        db.session.add(event_promoter)
+        db.session.commit()
+
 
 class EventPromoter(db.Model):
 
@@ -39,10 +71,16 @@ class EventPromoter(db.Model):
         COPROMOTER = auto()
         MAIN = auto()
 
+    class Status(IntEnum):
+        PENDING = auto()
+        APPROVED = auto()
+        REJECTED = auto()
+
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
     promoter_id = db.Column(db.Integer, db.ForeignKey('promoter.id'), primary_key=True)
 
-    role = db.Column(db.Integer, default=1, nullable=False)
+    role = db.Column(db.Integer, default=Role.MAIN.value, nullable=False)
+    status = db.Column(db.Integer, default=Status.PENDING.value, nullable=False)
 
     event = db.relationship('Event', backref=db.backref('event_promoters'))
     promoter = db.relationship('Promoter', backref=db.backref('event_promoters', lazy='dynamic'))

@@ -1,8 +1,8 @@
 from .mutations import eventMutation
-from .queries import eventCategoryQuery
+from .queries import eventCategoryQuery, eventQuey
 
 
-class EventQuery(eventCategoryQuery.Query):
+class EventQuery(eventQuey.Query, eventCategoryQuery.Query):
     pass
 
 

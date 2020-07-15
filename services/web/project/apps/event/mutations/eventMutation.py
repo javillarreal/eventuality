@@ -1,12 +1,16 @@
 import graphene
+from flask_jwt_extended import get_jwt_identity
 
 from project.app import db
-from project.apps.promoter.models.promoter import PromoterUser
+from project.apps.promoter.models.promoter import Promoter, PromoterUser
+from project.apps.user.models.user import User
 from project.utils.auth.core import requires_access_level, role_required
+from project.utils.graphql.exception import ExceptionType
 from project.utils.graphql.input import (get_model_fields, is_valid_id,
                                          validate_dates)
 from project.utils.graphql.mutation import BaseMutation
 
+from ..models.event import Event
 from ..models.eventCategory import EventCategory
 from ..types import EventCategoryType, EventType
 
@@ -26,47 +30,64 @@ class CreateEvent(BaseMutation):
         profit = graphene.Boolean(required=False)
         main_category_id = graphene.Int(required=True)
         subcategories_ids = graphene.List(graphene.Int, required=False)
+        main_promoters_ids = graphene.List(graphene.Int, required=True)
+        copromoters_ids = graphene.List(graphene.Int, required=False)
         
     # TODO: add decorator for creator and admin roles requirement
+    # TODO: add location support
     @requires_access_level(required_role=PromoterUser.Role.CREATOR)
     def mutate(self, info, **kwargs):
-        # TODO: add location support
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+
         model_fields, other_fields = get_model_fields(Event, **kwargs)
         exceptions = list()
 
-        ok, exception = validate_dates(
+        exception = validate_dates(
             model_fields.get('datetime_from'), 
             model_fields.get('datetime_to')
         )
-        if ok is False:
+        if exception is not None:
             exceptions.append(exception)
         
         capacity = model_fields.get('capacity')
         if capacity is not None:
             if capacity < 0:
-                ok = False
                 exception = ExceptionType(
                     field='capacity',
-                    message=f'Capacity must be grater than 0. Received {capacity}'
+                    message=f'Capacity must be more than 0. Received {capacity}'
                 )
+                exceptions.append(exception)
 
-         # check if user exists
+        # check if main category exists
         field = 'main_category_id'
         main_category_id = model_fields.get(field)
 
-        ok, exception = is_valid_id(EventCategory, main_category_id, field)
-        if not ok:
+        exception = is_valid_id(EventCategory, main_category_id, field)
+        if exception is not None:
             exceptions.append(exception)
         else:
             main_category = EventCategory.query.get(main_category_id)
 
-        if len(exceptions) > 0:
-            return CreateEvent(exceptions=exceptions, ok=ok)
+        # check if main promoters exists
+        field = 'main_promoters_ids'
+        main_promoters_ids = other_fields.get(field)
 
-        # create event
-        event = Event(**model_fields)
-        # db.session.add(event)
-        # db.session.commit()
+        main_promoters = list()
+        for promoter_id in main_promoters_ids:
+            exception = is_valid_id(Promoter, promoter_id, field)
+
+            if exception is not None:
+                exceptions.append(exception)
+            else:
+                main_promoters.append(Promoter.query.get(promoter_id))
+
+        if len(exceptions) > 0:
+            for e in exceptions:
+                print(e.message)
+            return CreateEvent(exceptions=exceptions, ok=False)
+        
+        event = Event.create_event(user=user, main_promoters=main_promoters, **model_fields)
 
         return CreateEvent(event=event)
 
