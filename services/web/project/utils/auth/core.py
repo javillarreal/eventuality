@@ -8,6 +8,7 @@ from project.utils.auth.exceptions import (AdminLevelRequired,
                                            UserRoleNotSufficed)
 
 from project.apps.user.models.user import User
+from project.apps.event.models.event import EventPromoter
 from project.apps.promoter.models.promoter import Promoter, PromoterUser
 
 
@@ -39,7 +40,7 @@ def admin_required(fn, exception=AdminLevelRequired):
     return wrapper
 
 
-def requires_access_level(required_role: int, exception=UserRoleNotSufficed):
+def role_required(required_role: int, exception=UserRoleNotSufficed):
     def decorator(fn):
         @wraps(fn)
         def decorated_function(*args, **kwargs):
@@ -49,6 +50,20 @@ def requires_access_level(required_role: int, exception=UserRoleNotSufficed):
             user = User.query.get(user_id)
 
             main_promoters_ids = kwargs.get('main_promoters_ids')
+
+            if main_promoters_ids is None:
+                event_id = kwargs.get('event_id')
+
+                event_promoters = EventPromoter.query.filter(
+                    EventPromoter.event_id==event_id,
+                    EventPromoter.status==EventPromoter.Status.APPROVED.value,
+                    EventPromoter.role==EventPromoter.Role.MAIN.value
+                ).all()
+
+                if event_promoters is None:
+                    raise exception
+
+                main_promoters_ids = [ep.promoter_id for ep in event_promoters]
             
             max_role = PromoterUser.query.filter(
                 PromoterUser.user==user,
@@ -63,20 +78,3 @@ def requires_access_level(required_role: int, exception=UserRoleNotSufficed):
         
         return decorated_function
     return decorator
-
-
-def role_required(fn, required_role, exception=UserRoleNotSufficed):
-    @wraps(fn)
-    def wrapper(*args, **kwargs):
-        verify_jwt_in_request()
-        claims = get_jwt_claims()
-
-        user_roles = claims['roles']
-        print(type(user_roles), user_roles)
-
-        print(*args)
-
-        print(**kwargs)
-        
-        return fn(*args, **kwargs)
-    return wrapper
