@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from typing import Tuple
 
@@ -5,7 +6,9 @@ from ..graphql.exception import ExceptionType
 
 
 def get_model_fields(model, **kwargs: dict) -> Tuple[dict, dict]:
-    model_name = str(model.__name__).lower()
+    model_name = str(model.__name__)
+    model_name = re.sub(r'(?<!^)(?=[A-Z])', '_', model_name).lower()
+    
     model_fields = [
         str(field).replace(model_name + '.', '') 
         for field in model.__table__.columns
