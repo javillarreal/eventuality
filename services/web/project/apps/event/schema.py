@@ -1,10 +1,10 @@
-from .mutations import eventMutation
-from .queries import eventCategoryQuery, eventQuey
+from .mutations import eventMutation, eventUpdateMutation
+from .queries import eventCategoryQuery, eventQuey, eventUpdateQuery
 
 
-class EventQuery(eventQuey.Query, eventCategoryQuery.Query):
+class EventQuery(eventQuey.Query, eventCategoryQuery.Query, eventUpdateQuery.Query):
     pass
 
 
-class EventMutation(eventMutation.Mutation):
+class EventMutation(eventMutation.Mutation, eventUpdateMutation.Mutation):
     pass

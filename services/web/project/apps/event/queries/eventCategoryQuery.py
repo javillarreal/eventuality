@@ -1,6 +1,5 @@
 import graphene
 from flask_jwt_extended import get_jwt_claims, get_jwt_identity, jwt_required
-from graphene_sqlalchemy import SQLAlchemyConnectionField
 
 from ..models.eventCategory import EventCategory
 from ..types import EventCategoryType

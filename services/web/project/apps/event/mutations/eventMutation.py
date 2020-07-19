@@ -4,7 +4,7 @@ from flask_jwt_extended import get_jwt_identity
 from project.app import db
 from project.apps.promoter.models.promoter import Promoter, PromoterUser
 from project.apps.user.models.user import User
-from project.utils.auth.core import requires_access_level, role_required
+from project.utils.auth.core import role_required, role_required
 from project.utils.graphql.exception import ExceptionType
 from project.utils.graphql.input import (get_model_fields, is_valid_id,
                                          validate_dates)
@@ -35,7 +35,7 @@ class CreateEvent(BaseMutation):
         
     # TODO: add decorator for creator and admin roles requirement
     # TODO: add location support
-    @requires_access_level(required_role=PromoterUser.Role.CREATOR)
+    @role_required(required_role=PromoterUser.Role.CREATOR)
     def mutate(self, info, **kwargs):
         user_id = get_jwt_identity()
         user = User.query.get(user_id)

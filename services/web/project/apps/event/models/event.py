@@ -8,6 +8,7 @@ from project.apps.promoter.models.promoter import Promoter, PromoterUser
 from project.apps.user.models.user import User
 
 from .eventCategory import EventCategory
+from .eventUpdate import EventUpdate
 
 event_subcategories = db.Table('event_subcategories',
     db.Column('event_id', db.Integer, db.ForeignKey('event.id'), primary_key=True),
@@ -30,6 +31,8 @@ class Event(db.Model):
     main_category_id = db.Column(db.Integer, db.ForeignKey('event_category.id'))
     main_category = db.relationship('EventCategory')
 
+    updates = db.relationship('EventUpdate', backref='event')
+
     def __repr__(self):
         return f'Event: {self.name}'
 
@@ -39,7 +42,7 @@ class Event(db.Model):
         event = cls(**kwargs)
         db.session.add(event)
         db.session.commit()
-
+        
         for promoter in main_promoters:
             event.assign_promoter(promoter=promoter, user=user, main=True)
 
@@ -63,6 +66,14 @@ class Event(db.Model):
 
         db.session.add(event_promoter)
         db.session.commit()
+
+    def create_update(self, text: str, **kwargs):
+        event_update = EventUpdate(text=text)
+        
+        self.updates.append(event_update)
+        db.session.commit()
+
+        return event_update
 
 
 class EventPromoter(db.Model):
