@@ -2,11 +2,12 @@ import graphene
 from project import settings
 from flask import Flask, jsonify, render_template, request
 from flask_jwt_extended import JWTManager, create_access_token
-from flask_graphql import GraphQLView
+# from flask_graphql import GraphQLView
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from six.moves.urllib.parse import urlencode
+from graphene_file_upload.flask import FileUploadGraphQLView
+
 
 # set up app
 app = Flask(__name__)
@@ -41,11 +42,9 @@ class Mutation(UserMutation, PromoterMutation, EventMutation):
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
-
-
 app.add_url_rule(
     '/graphql',
-    view_func=GraphQLView.as_view(
+    view_func=FileUploadGraphQLView.as_view(
         'graphql',
         schema=schema,
         graphiql=True # to have the GraphiQL interface

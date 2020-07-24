@@ -67,8 +67,11 @@ class Event(db.Model):
         db.session.add(event_promoter)
         db.session.commit()
 
-    def create_update(self, text: str, **kwargs):
-        event_update = EventUpdate(text=text)
+    def create_update(self, text: str, tag: int = None, **kwargs):
+        event_update = EventUpdate(
+            tag=tag,
+            text=text
+        )
         
         self.updates.append(event_update)
         db.session.commit()

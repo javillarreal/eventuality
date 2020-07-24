@@ -11,3 +11,4 @@ requests>=2.23.0,<3.0.0
 flask-jwt-extended>=3.24.1,<4.0.0
 geopy>=1.21.0,<2.0.0
 spotipy>=2.12.0,<3.0.0
+graphene-file-upload>=1.2.2,<2.0.0

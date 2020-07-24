@@ -1,3 +1,4 @@
+import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from .models.event import Event, EventPromoter
@@ -24,6 +25,7 @@ class EventCategoryType(SQLAlchemyObjectType):
 
 
 class EventUpdateType(SQLAlchemyObjectType):
+    tag_enum = graphene.Enum.from_enum(EventUpdate.Tag)
 
     class Meta:
         model = EventUpdate
