@@ -9,6 +9,12 @@ Commands to run:
 - docker-compose up -d
 
 ## Database commands
+### Should be managed by docker itself (issue):
+(in docker db container):
+- psql -U postgres
+- CREATE USER <username> WITH PASSWORD '<password>';
+- CREATE DATABASE <database> OWNER <username>;
+
 Create database for fisrt time (in docker web container):
 - python manage.py create-db
 
