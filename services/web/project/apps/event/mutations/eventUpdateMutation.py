@@ -24,7 +24,6 @@ class CreateEventUpdate(BaseMutation):
     @role_required(required_role=PromoterUser.Role.CREATOR)
     def mutate(self, info, file=None, **kwargs):
         model_fields, other_fields = get_model_fields(EventUpdate, **kwargs)
-        print(model_fields['tag'])
 
         exceptions = list()
         
@@ -40,7 +39,7 @@ class CreateEventUpdate(BaseMutation):
         
         if len(exceptions) > 0:
             print(exceptions)
-            return CreateEventUpdate(ok=Falase, exceptions=exceptions)
+            return CreateEventUpdate(success=False, exceptions=exceptions)
 
         if file:
             # TODO: manage media files for event supports

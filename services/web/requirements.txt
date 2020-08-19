@@ -12,3 +12,6 @@ flask-jwt-extended>=3.24.1,<4.0.0
 geopy>=1.21.0,<2.0.0
 spotipy>=2.12.0,<3.0.0
 graphene-file-upload>=1.2.2,<2.0.0
+graphql-ws>=0.3.1,<1.0.0
+Flask-Sockets>=0.2.1,<1.0.0
+Flask-Cors>=3.0.8,<4.0.0

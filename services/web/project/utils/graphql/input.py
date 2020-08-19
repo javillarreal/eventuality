@@ -38,16 +38,29 @@ def is_valid_id(model, id: int, input_name: str = 'id'):
 
 
 def is_value_unique(model, value, input_name: str = 'id'):
-    ok, exception = True, None
-
-    if not model.query.filter(model.username==value):
-        ok = False
+    existing_record = model.query.filter(getattr(model, input_name)==value).scalar()
+    
+    if existing_record:
         exception = ExceptionType(
             field=input_name,
-            message=f"{input_name} {value} is taken"
+            message=f"'{value}' {input_name} already exists"
         )
 
-    return ok, exception
+        return exception
+
+
+def resource_exists(model, value, input_name: str = 'id'):
+    instance = model.query.filter(getattr(model, input_name)==value).scalar()
+
+    if not instance:
+        exception = ExceptionType(
+            field=input_name,
+            message=f"{model.__name__} with {input_name} '{value}' not found"
+        )
+        
+        return exception
+    
+    return instance
 
 
 def validate_dates(datetime_from: datetime, datetime_to: datetime = None):

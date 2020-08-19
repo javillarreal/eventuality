@@ -2,11 +2,14 @@ import graphene
 from project import settings
 from flask import Flask, jsonify, render_template, request
 from flask_jwt_extended import JWTManager, create_access_token
-# from flask_graphql import GraphQLView
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_sockets import Sockets
 from graphene_file_upload.flask import FileUploadGraphQLView
+from graphql_ws.gevent import GeventSubscriptionServer
+from flask_graphql import GraphQLView
+from flask_cors import CORS
 
 
 # set up app
@@ -14,6 +17,11 @@ app = Flask(__name__)
 app.config.from_object("project.config.Config")
 app.debug = True
 
+# CORS
+CORS(app)
+
+# Sockets
+sockets = Sockets(app)
 
 # set up database
 db = SQLAlchemy(app)
@@ -28,7 +36,7 @@ from .apps.event.models.eventCategory import EventCategory
 from .apps.promoter.models.promoter import Promoter, PromoterUser
 from .apps.user.models.user import User
 
-from .apps.event.schema import EventQuery, EventMutation
+from .apps.event.schema import EventQuery, EventMutation, EventSubscription
 from .apps.promoter.schema import PromoterMutation, PromoterQuery
 from .apps.user.schema import UserQuery, UserMutation
 
@@ -41,17 +49,35 @@ class Mutation(UserMutation, PromoterMutation, EventMutation):
     pass
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+class Subscription(EventSubscription):
+    pass
+
+
+# schema definition
+schema = graphene.Schema(query=Query, mutation=Mutation, subscription=Subscription)
+
+# graphql base url with file uploads upport
 app.add_url_rule(
     '/graphql',
-    view_func=FileUploadGraphQLView.as_view(
+    view_func=GraphQLView.as_view(
         'graphql',
         schema=schema,
         graphiql=True # to have the GraphiQL interface
     )
 )
 
+# graphql subscriptions endpoint setup
+subscription_server = GeventSubscriptionServer(schema)
+app.app_protocol = lambda environ_path_info: 'graphql-ws'
 
+
+@sockets.route('/subscriptions')
+def echo_socket(ws):
+    subscription_server.handle(ws)
+    return [] 
+
+
+# auth route rules
 @app.route('/login', methods=['POST'])
 def login():
     if not request.is_json:
@@ -75,6 +101,9 @@ def login():
     return jsonify(access_token=access_token), 200
 
 
-@app.route("/")
-def hello_world():
-    return render_template('index.html')
+if __name__ == "__main__":
+    from gevent import pywsgi
+    from geventwebsocket.handler import WebSocketHandler
+    print('subscriptions!')
+    server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+    server.serve_forever()

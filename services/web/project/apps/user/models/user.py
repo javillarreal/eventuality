@@ -17,9 +17,9 @@ class User(db.Model):
     email_verified = db.Column(db.Boolean, default=False)
     
     username = db.Column(db.String(30), nullable=False, unique=True, index=True)
+    email = db.Column(db.String(40), nullable=False, unique=True)
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(30))
-    email = db.Column(db.String(40), nullable=False, unique=True)
 
     country = db.Column(db.String(3))
     birthdate = db.Column(db.DateTime)
@@ -41,3 +41,13 @@ class User(db.Model):
     @property
     def full_name(self) -> str:
         return ' '.join(self.first_name, self.last_name)
+    
+
+    @classmethod
+    def create_user(cls, **kwargs):
+        user = cls(**kwargs)
+
+        db.session.add(user)
+        db.session.commit()
+        
+        return user

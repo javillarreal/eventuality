@@ -83,9 +83,7 @@ class CreateEvent(BaseMutation):
                 main_promoters.append(Promoter.query.get(promoter_id))
 
         if len(exceptions) > 0:
-            for e in exceptions:
-                print(e.message)
-            return CreateEvent(exceptions=exceptions, ok=False)
+            return CreateEvent(exceptions=exceptions, success=False)
         
         event = Event.create_event(user=user, main_promoters=main_promoters, **model_fields)
 

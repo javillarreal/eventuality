@@ -63,7 +63,7 @@ class CreatePromoter(BaseMutation):
             if exception is not None: exceptions.append(exception)
 
         if len(exceptions) > 0:
-            return CreatePromoter(exceptions=exceptions, ok=False)
+            return CreatePromoter(exceptions=exceptions, success=False)
         
         # create promoter
         promoter = Promoter(**model_fields)
