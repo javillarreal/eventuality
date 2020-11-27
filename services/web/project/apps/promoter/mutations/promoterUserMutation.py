@@ -1,12 +1,11 @@
 import graphene
 
 from project.app import db
-from project.apps.promoter.models.promoter import Promoter
-from project.apps.promoter.models.promoterUser import (PromoterUser,
-                                                       PromoterUserType)
+from project.apps.promoter.models.promoter import Promoter, PromoterUser
 from project.apps.user.models.user import User
 from project.utils.graphql.mutation import BaseMutation
 
+from ..types import PromoterType, PromoterUserType
 
 user_role_enum = graphene.Enum.from_enum(PromoterUser.Role)
 
@@ -32,21 +31,21 @@ class CreatePromoterUser(BaseMutation):
         field = 'promoter_id'
         promoter_id = model_fields.get(field)
 
-        ok, exception = is_valid_id(Promoter, promoter_id, field)
-        if not ok:
+        success, exception = is_valid_id(Promoter, promoter_id, field)
+        if not success:
             exceptions.append(exception)
 
         # check if user exists
         field = 'user_id'
         user_id = model_fields.get(field)
 
-        ok, exception = is_valid_id(User, user_id, field)
-        if not ok:
+        success, exception = is_valid_id(User, user_id, field)
+        if not success:
             exceptions.append(exception)
 
         # return found exceptions
         if len(exceptions) > 0:
-            return CreatePromoter(exceptions=exceptions, ok=ok)
+            return CreatePromoter(exceptions=exceptions, success=success)
 
         # assign user to promoter
         promoter_user = PromoterUser(model_fields)

@@ -1,5 +1,6 @@
-from .queries import userQuery
 from .mutations import userMutation
+from .queries import userQuery
+
 
 class UserQuery(userQuery.Query):
     pass

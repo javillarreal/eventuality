@@ -4,8 +4,8 @@ from project.utils.graphql.exception import ExceptionType
 
 
 class BaseMutation(graphene.Mutation):
+    success = graphene.Boolean(required=True, default_value=True)
     exceptions = graphene.List(ExceptionType)
-    ok = graphene.Boolean(required=True, default_value=True)
 
     class Meta:
         abstract = True

@@ -58,7 +58,7 @@ def seed_db():
 @click.argument('username')
 @click.argument('email')
 def create_admin(username, email):
-    password = click.prompt('Please enter a secur password', type=str)
+    password = click.prompt('Please enter a secure password', type=str)
     db.session.add(User(
         username=username,
         email=email,

@@ -1,5 +1,8 @@
 import graphene
-from project.apps.user.models.user import User, UserType
+
+from project.apps.user.models.user import User
+
+from ..types import UserType
 
 
 class Query(graphene.ObjectType):

@@ -1,7 +1,5 @@
+from .mutations import promoterMutation, promoterUserMutation
 from .queries import promoterQuery
-
-from .mutations import promoterMutation
-from .mutations import promoterUserMutation
 
 
 class PromoterQuery(promoterQuery.Query):

@@ -1,7 +1,30 @@
 from datetime import datetime
-from graphene_sqlalchemy import SQLAlchemyObjectType
+from enum import IntEnum, auto
+from sqlalchemy.ext.associationproxy import association_proxy
+
 from project.app import db
 from project.apps.event.models.eventCategory import EventCategory
+from project.apps.user.models.user import User
+
+
+class PromoterUser(db.Model):
+    
+    class Role(IntEnum):
+        SUPPORT = auto()
+        CREATOR = auto()
+        ADMIN = auto()
+
+    promoter_id = db.Column(db.Integer, db.ForeignKey('promoter.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+
+    role = db.Column(db.Integer, default=Role.SUPPORT.value, nullable=False)
+
+    promoter = db.relationship('Promoter', backref=db.backref('roles'))
+    user = db.relationship('User', backref=db.backref('roles'))
+
+    @classmethod
+    def get_minimum_role_for_event(cls):
+        return cls.Role.CREATOR
 
 
 class Promoter(db.Model):
@@ -15,13 +38,11 @@ class Promoter(db.Model):
     email = db.Column(db.String(40))
     category_id = db.Column(db.Integer, db.ForeignKey('event_category.id'))
     category = db.relationship(EventCategory)
-
+    users = db.relationship('User', secondary='promoter_user', backref=db.backref('promoters'))
 
     def __repr__(self):
         return f'<Promoter: {self.username}>'
 
-
-class PromoterType(SQLAlchemyObjectType):
-
-    class Meta:
-        model = Promoter
+    def get_user_role(self, user: User):
+        promoter_user = PromoterUser.query.filter(PromoterUser.user==user).first()
+        return promoter_user.role

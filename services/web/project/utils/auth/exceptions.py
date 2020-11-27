@@ -1,5 +1,5 @@
 class PermissionDenied(Exception):
-    default_message = None
+    default_message = 'Unknown error ocurred'
 
     def __init__(self, message=None):
         if message is None:

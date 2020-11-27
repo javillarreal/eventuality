@@ -3,7 +3,9 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from project.app import db
 
+
 class EventCategory(db.Model):
+    __tablename__ = 'event_category'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True, index=True)
     description = db.Column(db.String)
@@ -13,9 +15,3 @@ class EventCategory(db.Model):
 
     def __repr__(self):
         return f'<Event category: {self.name}'
-
-
-class EventCategoryType(SQLAlchemyObjectType):
-    
-    class Meta:
-        model = EventCategory
