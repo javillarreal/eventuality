@@ -4,3 +4,4 @@ settings.json
 .env.dev
 __pycache__/
 .vscode/
+.idea

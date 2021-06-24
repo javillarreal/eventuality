@@ -1,6 +1,7 @@
 import graphene
 
 from project.app import db
+from project.utils.auth.core import role_required
 from project.apps.promoter.models.promoter import Promoter, PromoterUser
 from project.apps.user.models.user import User
 from project.utils.graphql.mutation import BaseMutation
@@ -21,10 +22,9 @@ class CreatePromoterUser(BaseMutation):
         user_id = graphene.Int(required=True)
         role = graphene.Argument(user_role_enum, default_value=PromoterUser.Role.CREATOR)
 
-    # TODO: add decorator for promoter user with admin role required
-    # TODO: proper tests
+    @role_required(required_role=PromoterUser.Role.ADMIN)
     def mutate(self, info, **kwargs):
-        model_fields, other_fields = get_model_fields(Promoter, **kwargs)
+        model_fields, _ = get_model_fields(Promoter, **kwargs)
         exceptions = list()
 
         # check if user exists

@@ -38,7 +38,7 @@ class Event(db.Model):
 
     @classmethod
     def create_event(cls, user: User, main_promoters: list, copromoters: list = [], **kwargs):
-
+        
         event = cls(**kwargs)
         db.session.add(event)
         db.session.commit()

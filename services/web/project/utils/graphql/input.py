@@ -1,11 +1,11 @@
 import re
 from datetime import datetime
-from typing import Tuple
+from typing import Tuple, List
 
 from ..graphql.exception import ExceptionType
 
 
-def get_model_fields(model, **kwargs: dict) -> Tuple[dict, dict]:
+def get_model_fields(model, include_fields: List[str] = [], **kwargs: dict) -> Tuple[dict, dict]:
     model_name = str(model.__name__)
     model_name = re.sub(r'(?<!^)(?=[A-Z])', '_', model_name).lower()
     
@@ -17,7 +17,7 @@ def get_model_fields(model, **kwargs: dict) -> Tuple[dict, dict]:
     model_fields_kwargs = dict()
     other_fields_kwargs = dict()
     for key, value in kwargs.items():
-        if key in model_fields:
+        if key in model_fields or key in include_fields:
             model_fields_kwargs[key] = value
         else:
             other_fields_kwargs[key] = value

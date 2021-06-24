@@ -1,10 +1,11 @@
 import graphene
 from flask_jwt_extended import get_jwt_identity
+from datetime import datetime
 
 from project.app import db
 from project.apps.promoter.models.promoter import Promoter, PromoterUser
 from project.apps.user.models.user import User
-from project.utils.auth.core import role_required, role_required
+from project.utils.auth.core import role_required
 from project.utils.graphql.exception import ExceptionType
 from project.utils.graphql.input import (get_model_fields, is_valid_id,
                                          validate_dates)
@@ -24,7 +25,8 @@ class CreateEvent(BaseMutation):
         name = graphene.String(required=True)
         longitude = graphene.Float(required=False)
         latitude = graphene.Float(required=False)
-        datetime_from = graphene.DateTime(required=True)
+        # TODO: make it required
+        datetime_from = graphene.DateTime(required=False, default_value=datetime.now())
         datetime_to = graphene.DateTime(required=False)
         capacity = graphene.Int(required=False)
         profit = graphene.Boolean(required=False)
@@ -32,8 +34,7 @@ class CreateEvent(BaseMutation):
         subcategories_ids = graphene.List(graphene.Int, required=False)
         main_promoters_ids = graphene.List(graphene.Int, required=True)
         copromoters_ids = graphene.List(graphene.Int, required=False)
-        
-    # TODO: add decorator for creator and admin roles requirement
+
     # TODO: add location support
     @role_required(required_role=PromoterUser.Role.CREATOR)
     def mutate(self, info, **kwargs):
@@ -42,12 +43,15 @@ class CreateEvent(BaseMutation):
 
         model_fields, other_fields = get_model_fields(Event, **kwargs)
         exceptions = list()
+        print(model_fields)
+
 
         exception = validate_dates(
             model_fields.get('datetime_from'), 
             model_fields.get('datetime_to')
         )
         if exception is not None:
+            print(exceptions)
             exceptions.append(exception)
         
         capacity = model_fields.get('capacity')
@@ -82,6 +86,7 @@ class CreateEvent(BaseMutation):
             else:
                 main_promoters.append(Promoter.query.get(promoter_id))
 
+        print([str(e.message) for e in exceptions])
         if len(exceptions) > 0:
             return CreateEvent(exceptions=exceptions, success=False)
         

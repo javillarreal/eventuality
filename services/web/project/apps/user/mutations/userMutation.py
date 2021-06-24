@@ -52,13 +52,13 @@ class CreateUser(BaseMutation):
         # TODO: more arguments
 
     def mutate(self, info, **kwargs):
-        model_fields, other_fields = get_model_fields(User, **kwargs)
+        model_fields, _ = get_model_fields(User, ['password'], **kwargs)
 
         exceptions = list()
 
         # check if username does not exists
         field = 'username'
-        username = model_fields.pop(field)
+        username = model_fields.get(field)
 
         exception = is_value_unique(User, username, field)
         if exception is not None:
@@ -66,7 +66,7 @@ class CreateUser(BaseMutation):
         
         # check if email does not exists
         field = 'email'
-        email = model_fields.pop(field)
+        email = model_fields.get(field)
 
         exception = is_value_unique(User, email, field)
         if exception is not None:

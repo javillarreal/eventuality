@@ -9,4 +9,4 @@ class Query(graphene.ObjectType):
     users = graphene.List(UserType)
 
     def resolve_users(self, info):
-        return User.query.all()
+        return User.query.filter_by(is_admin=False)
